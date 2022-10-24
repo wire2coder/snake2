@@ -10,55 +10,76 @@ import pygame
 from pygame.locals import *
 import os
 
+
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
+class Snake:
+    # constructor
+    def __init__(self, parent_screen):
+        self.parent_screen = parent_screen
+        self.block = pygame.image.load('./resources/block.jpg', 'just a block').convert()
+        self.x = 0  # starting location for block.jpg
+        self.y = 0  # starting location for block.jpg
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+    def draw(self):
+        self.parent_screen.fill((110, 110, 5))
+        self.parent_screen.blit(self.block, (self.x, self.y)) # 'draw' block.jpg on the screen
+        pygame.display.flip()  # update the 'screen'
 
-def draw_block():
-    surface.fill((110, 110, 5))
-    surface.blit(block, (block_x, block_y)) # what's a 'blit'?
-    pygame.display.flip() # update the 'screen'
+    def move_up(self): # y direction, reverse
+        self.y = self.y - 10
+        self.draw()
+    def move_down(self):
+        self.y = self.y + 10
+        self.draw()
+    def move_left(self): # x direction
+        self.x = self.x - 10
+        self.draw()
+    def move_right(self):
+        self.x = self.x + 10
+        self.draw()
+
+class Game:
+    # constructor
+    def __init__(self):
+        pygame.init()
+        self.surface = pygame.display.set_mode((500, 500))
+        self.surface.fill((110, 110, 5))  # fill background color
+
+        # making an object variable
+        self.snake1 = Snake(self.surface)
+        self.snake1.draw()
+
+    def run(self):
+
+        running = True
+        while running:
+            asdf1 = pygame.event.get()
+            for event in asdf1:
+                if event.type == KEYDOWN:
+                    if event.key == K_ESCAPE:
+                        running = False
+
+                    if event.key == K_UP:
+                        self.snake1.move_up()
+                    if event.key == K_DOWN:
+                        self.snake1.move_down()
+                    if event.key == K_RIGHT:
+                        self.snake1.move_right()
+                    if event.key == K_LEFT:
+                        self.snake1.move_left()
+
+                elif event.type == QUIT:  # this is when you click the 'x'
+                    running = False
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    pygame.init()
-    surface = pygame.display.set_mode((500,500))
-    surface.fill((110,110,5))
-    block = pygame.image.load('./resources/block.jpg', 'just a block').convert()
 
-    block_x = 0
-    block_y = 0
-    surface.blit(block, (block_x, block_y))
-
-    pygame.display.flip() # Update the full display Surface to the screen
-
-    running = True
-
-    while running:
-        asdf1 = pygame.event.get()
-        for event in asdf1:
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
-                    running = False
-                if event.key == K_UP:
-                    block_y = block_y - 10 # reverse y-direction
-                    draw_block()
-                if event.key == K_DOWN:
-                    block_y = block_y + 10 # reverse y-direction
-                    draw_block()
-                if event.key == K_RIGHT:
-                    block_x = block_x + 10
-                    draw_block()
-                if event.key == K_LEFT:
-                    block_x = block_x - 10
-                    draw_block()
-
-            elif event.type == QUIT: # this is when you click the 'x'
-                running = False
+    print(f'start debug here')
+    game1 = Game()
+    game1.run()
 
     print('debug wait')
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
