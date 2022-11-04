@@ -31,6 +31,29 @@ class Snake:
 
         pygame.display.flip()  # 'display the game window'
 
+    def move_up(self):
+        # decrease y-axis value by 10 (reversed y position)
+        self.y_position -= 10
+        # draw the 'game window' and 'snake'
+        self.draw_block()
+
+    def move_down(self):
+        # decrease y-axis value by 10 (reversed y position)
+        self.y_position += 10
+        # draw the 'game window' and 'snake'
+        self.draw_block()
+
+    def move_left(self):
+        # decrease y-axis value by 10 (reversed y position)
+        self.x_position -= 10
+        # draw the 'game window' and 'snake'
+        self.draw_block()
+
+    def move_right(self):
+        # decrease y-axis value by 10 (reversed y position)
+        self.x_position += 10
+        # draw the 'game window' and 'snake'
+        self.draw_block()
 
 class Game:
     def __init__(self):
@@ -56,22 +79,22 @@ class Game:
                 if asdf.type == KEYUP:  # when the key (on keyboard) bounce up
                     if asdf.key == K_ESCAPE:
                         running = False
+
                     if asdf.key == K_UP:
                         # subtract y value by 10
-                        self.snake1.y_position -= 10  # decrease y-axis by 10
-                        self.snake1.draw_block()
+                        self.snake1.move_up()  # decrease y-axis by 10
+
                     if asdf.key == K_DOWN:
                         # increase y value by 10
-                        self.snake1.y_position += 10
-                        self.snake1.draw_block()
+                        self.snake1.move_down()
+
                     if asdf.key == K_LEFT:
-                        # subtract X value by 10
-                        self.snake1.x_position -= 10
-                        self.snake1.draw_block()
+                        # subtract X value by 10, 'refactor' instructions into a function
+                        self.snake1.move_left()
+
                     if asdf.key == K_RIGHT:
                         # increase X value by 10
-                        self.snake1.x_position += 10
-                        self.snake1.draw_block()
+                        self.snake1.move_right()
 
                 if asdf.type == QUIT:
                     running = False
