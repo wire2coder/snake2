@@ -8,9 +8,9 @@
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 
 import time
+import os
 import pygame
 from pygame.locals import *
-import os
 
 
 class Snake:
@@ -24,6 +24,10 @@ class Snake:
         # 3. set 'starting position' for block.jpg
         self.x_position = 100
         self.y_position = 100
+
+        # start by moving to the right, 'by yourself'
+        # every 1 second
+        self.current_direction = 'right'
 
     def draw_block(self):
         self.game_window.fill((110, 110, 5))  # 'erase' previous 'block.jpg' by filling background color
@@ -55,6 +59,17 @@ class Snake:
         # draw the 'game window' and 'snake'
         self.draw_block()
 
+    def auto_move(self):
+        if self.current_direction == 'up':
+            self.move_up()
+        elif self.current_direction == 'down':
+            self.move_down()
+        elif self.current_direction == 'left':
+            self.move_left()
+        elif self.current_direction == 'right':
+            self.move_right()
+
+
 class Game:
     def __init__(self):
         # 1. make game 'window'
@@ -70,6 +85,9 @@ class Game:
         # 4. 'draw' the snake
         self.snake1.draw_block()
 
+        self.run_game()
+
+    def run_game(self):
         # infinite game loop
         running = True
         while running:
@@ -80,31 +98,38 @@ class Game:
                     if asdf.key == K_ESCAPE:
                         running = False
 
-                    if asdf.key == K_UP:
+                    elif asdf.key == K_UP:
                         # subtract y value by 10
-                        self.snake1.move_up()  # decrease y-axis by 10
+                        # self.snake1.move_up()  # decrease y-axis by 10
+                        self.snake1.current_direction = 'up'
 
-                    if asdf.key == K_DOWN:
+                    elif asdf.key == K_DOWN:
                         # increase y value by 10
-                        self.snake1.move_down()
+                        # self.snake1.move_down()
+                        self.snake1.current_direction = 'down'
 
-                    if asdf.key == K_LEFT:
+                    elif asdf.key == K_LEFT:
                         # subtract X value by 10, 'refactor' instructions into a function
-                        self.snake1.move_left()
+                        # self.snake1.move_left()
+                        self.snake1.current_direction = 'left'
 
-                    if asdf.key == K_RIGHT:
+                    elif asdf.key == K_RIGHT:
                         # increase X value by 10
-                        self.snake1.move_right()
+                        # self.snake1.move_right()
+                        self.snake1.current_direction = 'right'
 
-                if asdf.type == QUIT:
+                elif asdf.type == QUIT:
                     running = False
+
+            self.snake1.auto_move()
+            time.sleep(0.4)  # 0.4 second
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
 
-    gameWindow1 = Game()
-
+    gameWindow1 = Game() # make a 'game window' and 'snake'
+    gameWindow1.run_game() # run the 'infinite event loop'
 
 
 
