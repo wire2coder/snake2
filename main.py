@@ -13,8 +13,10 @@ import pygame
 from pygame.locals import *
 
 
+MAX_SNAKE_SIZE = 40
+
 class Snake:
-    def __init__(self, game_window):
+    def __init__(self, game_window, snake_length):
         # 1. get 'game_window' from game 'class'
         self.game_window = game_window
 
@@ -24,6 +26,9 @@ class Snake:
         # 3. set 'starting position' for block.jpg
         self.x_position = 100
         self.y_position = 100
+        # self.snake_length = snake_length
+        # self.x_position = [MAX_SNAKE_SIZE] * snake_length # MAX_SNAKE_SIZE is 40
+        # self.y_position = [MAX_SNAKE_SIZE] * snake_length
 
         # start by moving to the right, 'by yourself'
         # every 1 second
@@ -37,38 +42,31 @@ class Snake:
 
     def move_up(self):
         # decrease y-axis value by 10 (reversed y position)
-        self.y_position -= 10
+        # self.y_position -= 10
         # draw the 'game window' and 'snake'
-        self.draw_block()
+        # self.draw_block()
+        self.current_direction = 'up'
 
     def move_down(self):
-        # decrease y-axis value by 10 (reversed y position)
-        self.y_position += 10
-        # draw the 'game window' and 'snake'
-        self.draw_block()
+        self.current_direction = 'down'
 
     def move_left(self):
-        # decrease y-axis value by 10 (reversed y position)
-        self.x_position -= 10
-        # draw the 'game window' and 'snake'
-        self.draw_block()
+        self.current_direction = 'left'
 
     def move_right(self):
-        # decrease y-axis value by 10 (reversed y position)
-        self.x_position += 10
-        # draw the 'game window' and 'snake'
-        self.draw_block()
+        self.current_direction = 'right'
 
     def auto_move(self):
         if self.current_direction == 'up':
-            self.move_up()
+            self.y_position -= 10
         elif self.current_direction == 'down':
-            self.move_down()
+            self.y_position += 10
         elif self.current_direction == 'left':
-            self.move_left()
+            self.x_position -= 10
         elif self.current_direction == 'right':
-            self.move_right()
+            self.x_position += 10
 
+        self.draw_block()
 
 class Game:
     def __init__(self):
@@ -80,7 +78,7 @@ class Game:
         self.surface.fill((110, 110, 5))
 
         # 3. make a 'snake'
-        self.snake1 = Snake(self.surface)
+        self.snake1 = Snake(self.surface, 2)
 
         # 4. 'draw' the snake
         self.snake1.draw_block()
@@ -94,29 +92,26 @@ class Game:
             event = pygame.event.get()
 
             for asdf in event:
-                if asdf.type == KEYUP:  # when the key (on keyboard) bounce up
+                if asdf.type == KEYDOWN:  # when the key (on keyboard) bounce up
+
                     if asdf.key == K_ESCAPE:
                         running = False
 
                     elif asdf.key == K_UP:
                         # subtract y value by 10
-                        # self.snake1.move_up()  # decrease y-axis by 10
-                        self.snake1.current_direction = 'up'
+                        self.snake1.move_up()  # decrease y-axis by 10
 
                     elif asdf.key == K_DOWN:
                         # increase y value by 10
-                        # self.snake1.move_down()
-                        self.snake1.current_direction = 'down'
+                        self.snake1.move_down()
 
                     elif asdf.key == K_LEFT:
                         # subtract X value by 10, 'refactor' instructions into a function
-                        # self.snake1.move_left()
-                        self.snake1.current_direction = 'left'
+                        self.snake1.move_left()
 
                     elif asdf.key == K_RIGHT:
                         # increase X value by 10
-                        # self.snake1.move_right()
-                        self.snake1.current_direction = 'right'
+                        self.snake1.move_right()
 
                 elif asdf.type == QUIT:
                     running = False
