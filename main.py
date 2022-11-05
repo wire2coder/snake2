@@ -12,6 +12,9 @@ import os
 import pygame
 from pygame.locals import *
 
+import logging
+logging.basicConfig(level=logging.INFO)
+
 
 MAX_SNAKE_SIZE = 40
 
@@ -24,11 +27,11 @@ class Snake:
         self.block = pygame.image.load("resources/block.jpg")  # of an image file
 
         # 3. set 'starting position' for block.jpg
-        self.x_position = 100
-        self.y_position = 100
-        # self.snake_length = snake_length
-        # self.x_position = [MAX_SNAKE_SIZE] * snake_length # MAX_SNAKE_SIZE is 40
-        # self.y_position = [MAX_SNAKE_SIZE] * snake_length
+        # self.x_position = 100
+        # self.y_position = 100
+        self.snake_length = snake_length
+        self.x_position = [MAX_SNAKE_SIZE] * snake_length # MAX_SNAKE_SIZE is 40
+        self.y_position = [MAX_SNAKE_SIZE] * snake_length
 
         # start by moving to the right, 'by yourself'
         # every 1 second
@@ -36,7 +39,10 @@ class Snake:
 
     def draw_block(self):
         self.game_window.fill((110, 110, 5))  # 'erase' previous 'block.jpg' by filling background color
-        self.game_window.blit(self.block, (self.x_position, self.y_position))  # 'draw' 'block.jpg' at new location
+
+        # 'draw stuff' in each 'location' inside the 'array'
+        for index in range(self.snake_length):
+            self.game_window.blit(self.block, (self.x_position[index], self.y_position[index]))  # 'draw' 'block.jpg' at new location
 
         pygame.display.flip()  # 'display the game window'
 
@@ -56,15 +62,29 @@ class Snake:
     def move_right(self):
         self.current_direction = 'right'
 
-    def auto_move(self):
+    def auto_move(self): # the -1 at the 'end' means 'count backward'
+        # import pdb
+        # pdb.set_trace()
+        asdf_snake_length = self.snake_length-1
+        for index in range(self.snake_length-1, 0, -1):
+
+            # put stuff in position 9 into position 8
+            asdf1 = self.x_position[index - 1]
+            asdf2 = self.x_position[index]
+            # logging.info(f'x_pos now: {asdf2}')
+
+
+            self.x_position[index] = self.x_position[index - 1]
+            self.y_position[index] = self.y_position[index - 1]
+
         if self.current_direction == 'up':
-            self.y_position -= 10
+            self.y_position[0] -= 40
         elif self.current_direction == 'down':
-            self.y_position += 10
+            self.y_position[0] += 40
         elif self.current_direction == 'left':
-            self.x_position -= 10
+            self.x_position[0] -= 40
         elif self.current_direction == 'right':
-            self.x_position += 10
+            self.x_position[0] += 40 # add 40 to the 'first item' in the array, # this 40 is a different 40 from 'SIZE'
 
         self.draw_block()
 
@@ -78,7 +98,7 @@ class Game:
         self.surface.fill((110, 110, 5))
 
         # 3. make a 'snake'
-        self.snake1 = Snake(self.surface, 2)
+        self.snake1 = Snake(self.surface, 6) # the second 'argument/input' is the 'starting length' of the 'snake'
 
         # 4. 'draw' the snake
         self.snake1.draw_block()
@@ -116,13 +136,15 @@ class Game:
                 elif asdf.type == QUIT:
                     running = False
 
+            # print(f"start debug here")
             self.snake1.auto_move()
-            time.sleep(0.4)  # 0.4 second
+            time.sleep(1)  # 0.4 second
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
 
+    print(f"start debug here")
     gameWindow1 = Game() # make a 'game window' and 'snake'
     gameWindow1.run_game() # run the 'infinite event loop'
 

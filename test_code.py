@@ -10,4 +10,7 @@ for index in range(length-1, 0, -1):
     in2 = index-1
     x[index] = x[in2]
 
+for index in range(0,5):
+    asdf = index
+
 print('debug wait')
