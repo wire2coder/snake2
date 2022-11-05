@@ -18,6 +18,23 @@ logging.basicConfig(level=logging.INFO)
 
 MAX_SNAKE_SIZE = 40
 
+class Apple:
+    def __init__(self, game_window):
+        # 1 get the 'game window'
+        self.game_window = game_window
+
+        # 2 load the image
+        self.apple_img = pygame.image.load("./resources/apple.jpg")
+
+        # 3 x_position and y position
+        self.x_position = MAX_SNAKE_SIZE * 3
+        self.y_position = MAX_SNAKE_SIZE * 3
+
+    def draw_apple(self):
+        self.game_window.blit(self.apple_img, (self.x_position, self.y_position))
+        pygame.display.flip()
+
+
 class Snake:
     def __init__(self, game_window, snake_length):
         # 1. get 'game_window' from game 'class'
@@ -92,18 +109,28 @@ class Game:
     def __init__(self):
         # 1. make game 'window'
         pygame.init()
-        self.surface = pygame.display.set_mode((1000, 500))
+        self.game_window = pygame.display.set_mode((1000, 500))
 
         # 2. fill background color for the 'window'
-        self.surface.fill((110, 110, 5))
+        self.game_window.fill((110, 110, 5))
 
         # 3. make a 'snake'
-        self.snake1 = Snake(self.surface, 6) # the second 'argument/input' is the 'starting length' of the 'snake'
+        self.snake1 = Snake(self.game_window, 6) # the second 'argument/input' is the 'starting length' of the 'snake'
 
         # 4. 'draw' the snake
         self.snake1.draw_block()
 
+        # 5 make an Apple
+        self.apple1 = Apple(self.game_window)
+
+        # 6 draw the Apple
+        self.apple1.draw_apple()
+
         self.run_game()
+
+    def draw_all_objects(self):
+        self.snake1.auto_move()
+        self.apple1.draw_apple()
 
     def run_game(self):
         # infinite game loop
@@ -137,8 +164,9 @@ class Game:
                     running = False
 
             # print(f"start debug here")
-            self.snake1.auto_move()
-            time.sleep(1)  # 0.4 second
+            self.draw_all_objects()
+
+            time.sleep(0.4)  # 0.4 second
 
 
 # Press the green button in the gutter to run the script.
