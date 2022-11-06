@@ -30,7 +30,7 @@ class Apple:
         self.apple_img = pygame.image.load("./resources/apple.jpg")
 
         # 3 x_position and y position
-        self.x_position = MAX_SNAKE_SIZE * 3
+        self.x_position = MAX_SNAKE_SIZE * 3 # why multiply by 3?
         self.y_position = MAX_SNAKE_SIZE * 3
 
     def draw_apple(self):
@@ -67,7 +67,7 @@ class Snake:
         # every 1 second
         self.current_direction = 'right'
 
-    def draw_block(self):
+    def draw_block_snake(self):
         self.game_window.fill((110, 110, 5))  # 'erase' previous 'block.jpg' by filling background color
 
         # 'draw stuff' in each 'location' inside the 'array'
@@ -76,11 +76,23 @@ class Snake:
 
         pygame.display.flip()  # 'display the game window'
 
+    def increase_snake_lenght(self):
+
+        # adding 1 more 'block' to the 'snake
+        self.snake_length += 1
+
+        # increase x-position array by 1
+        self.x_position.append(-1) # -1 means add to the 'tail'
+
+        # increase y-position array by 1
+        self.y_position.append(-1)
+
+
     def move_up(self):
         # decrease y-axis value by 10 (reversed y position)
         # self.y_position -= 10
         # draw the 'game window' and 'snake'
-        # self.draw_block()
+        # self.draw_block_snake()
         self.current_direction = 'up'
 
     def move_down(self):
@@ -116,7 +128,7 @@ class Snake:
         elif self.current_direction == 'right':
             self.x_position[0] += 40 # add 40 to the 'first item' in the array, # this 40 is a different 40 from 'SIZE'
 
-        self.draw_block()
+        self.draw_block_snake()
 
 class Game:
     def __init__(self):
@@ -131,7 +143,7 @@ class Game:
         self.snake1 = Snake(self.game_window, 1) # the second 'argument/input' is the 'starting length' of the 'snake'
 
         # 4. 'draw' the snake
-        self.snake1.draw_block()
+        self.snake1.draw_block_snake()
 
         # 5 make an Apple
         self.apple1 = Apple(self.game_window)
@@ -141,21 +153,32 @@ class Game:
 
         self.run_game()
 
-    def play_draw_all_objects(self):
-        self.snake1.auto_move()
-        self.apple1.draw_apple()
-
-        collided = self.detect_collision()
-        if collided:
-            self.apple1.randomly_move_apple()
-
     def detect_collision(self):
         # 'collision' (over lapping) is when you have the
         # x and y position of the sake (x, y) is THE SAME as the x and y (x, y) position of the apple
         if self.snake1.x_position[0] == self.apple1.x_position and self.snake1.y_position[0] == self.apple1.y_position:
             # logging.info(f'collided {datetime.now()}')
-            self.snake1.snake_length += 1
             return True
+
+    def display_score_snake_length(self):
+        font1 = pygame.font.SysFont('arial', 30)
+        score1 = font1.render(f"Current Score: {self.snake1.snake_length}", True, (255, 255, 255))
+        current_apple_position = font1.render(f"Current Apple Location: {self.apple1.x_position}, {self.apple1.y_position}", True, (255,255,255))
+        self.game_window.blit(score1, (600, 10))
+        self.game_window.blit(current_apple_position, (600, 50))
+        pygame.display.flip()  # 'display the game window'
+
+
+    def play_draw_all_objects(self):
+        self.snake1.auto_move()
+        self.apple1.draw_apple()
+        self.display_score_snake_length()
+        # pygame.display.flip()  # 'display the game window'
+
+        collided = self.detect_collision()
+        if collided:
+            self.apple1.randomly_move_apple()
+            self.snake1.increase_snake_lenght()
 
     def run_game(self):
         # infinite game loop
