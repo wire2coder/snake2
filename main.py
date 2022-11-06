@@ -2,13 +2,14 @@
 # need to install 'pygame'
 # https://www.youtube.com/watch?v=8dfePlONtls&list=WL&index=3&t=12s
 # https://github.com/codebasics/python_projects/tree/main/1_snake_game
-
+import random
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 
 import time
 import os
+from datetime import datetime
 import pygame
 from pygame.locals import *
 
@@ -16,6 +17,8 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 
+WINDOW_WIDTH = 1000
+WINDOW_HEIGHT = 800
 MAX_SNAKE_SIZE = 40
 
 class Apple:
@@ -34,9 +37,19 @@ class Apple:
         self.game_window.blit(self.apple_img, (self.x_position, self.y_position))
         pygame.display.flip()
 
+    def randomly_move_apple(self):
+        # you have 1000 pixels (dots) in the x-axis
+        # your 'block/snake head' is 40x40 pixels, so 1000 divide 40 = 25
+        # so, inside that 1000 pixel, you have 25 'location' to place the 'apple' in the x-axis
+        # same logic applies to the y-axis, 800 divide 40 = 20
+        random_x_position = random.randint(0, 25) * MAX_SNAKE_SIZE # 25 * 40 = 1000
+        random_y_position = random.randint(0, 20) * MAX_SNAKE_SIZE
+        self.x_position = random_x_position
+        self.y_position = random_y_position
+
 
 class Snake:
-    def __init__(self, game_window, snake_length):
+    def __init__(self, game_window, snake_length=1):
         # 1. get 'game_window' from game 'class'
         self.game_window = game_window
 
@@ -109,13 +122,13 @@ class Game:
     def __init__(self):
         # 1. make game 'window'
         pygame.init()
-        self.game_window = pygame.display.set_mode((1000, 500))
+        self.game_window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 
         # 2. fill background color for the 'window'
         self.game_window.fill((110, 110, 5))
 
         # 3. make a 'snake'
-        self.snake1 = Snake(self.game_window, 6) # the second 'argument/input' is the 'starting length' of the 'snake'
+        self.snake1 = Snake(self.game_window, 1) # the second 'argument/input' is the 'starting length' of the 'snake'
 
         # 4. 'draw' the snake
         self.snake1.draw_block()
@@ -128,9 +141,21 @@ class Game:
 
         self.run_game()
 
-    def draw_all_objects(self):
+    def play_draw_all_objects(self):
         self.snake1.auto_move()
         self.apple1.draw_apple()
+
+        collided = self.detect_collision()
+        if collided:
+            self.apple1.randomly_move_apple()
+
+    def detect_collision(self):
+        # 'collision' (over lapping) is when you have the
+        # x and y position of the sake (x, y) is THE SAME as the x and y (x, y) position of the apple
+        if self.snake1.x_position[0] == self.apple1.x_position and self.snake1.y_position[0] == self.apple1.y_position:
+            # logging.info(f'collided {datetime.now()}')
+            self.snake1.snake_length += 1
+            return True
 
     def run_game(self):
         # infinite game loop
@@ -164,7 +189,7 @@ class Game:
                     running = False
 
             # print(f"start debug here")
-            self.draw_all_objects()
+            self.play_draw_all_objects()
 
             time.sleep(0.4)  # 0.4 second
 
