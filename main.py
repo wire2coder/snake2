@@ -171,7 +171,7 @@ class Game:
         # snake_head_x_y_value = self.snake1.x_position[0] and self.snake1.y_position[0]
         if self.snake1.x_position[0] in self.snake1.x_position[3 : : ]:
             if self.snake1.y_position[0] in self.snake1.y_position[3 : : ]:
-                # logging.info(f"SS collision x_pos {self.snake1.x_position[0]}, y_pos {self.snake1.y_position[0]}")
+                logging.info(f"SS collision x_pos {self.snake1.x_position[0]}, y_pos {self.snake1.y_position[0]}")
 
     def detect_collision(self, x1, y1, x2, y2): # look at the diagram for explanation for this 'logic'
         # don't confuse this 40 with the 'image size' of 40 pixels for 'block.jpg'
@@ -208,6 +208,9 @@ class Game:
         # collision logic for 'snake' and 'apple'
         collided = self.detect_collision(self.snake1.x_position[0], self.snake1.y_position[0], self.apple1.x_position, self.apple1.y_position)
         if collided:
+            # play the 'ding.mp3'
+            ding1 = pygame.mixer.Sound("resources/ding.mp3")
+            pygame.mixer.Sound.play(ding1)
             self.apple1.randomly_move_apple()
             self.snake1.increase_snake_lenght()
 
